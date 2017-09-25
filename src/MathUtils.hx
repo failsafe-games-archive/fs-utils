@@ -7,8 +7,8 @@ import haxe.ds.Vector;
  *
  * Also some approx. functions for faster performance (do some testing about that...)
  */
-class MathUtils
-{
+class MathUtils {
+
   // Const
   public inline static var PI = 3.141592653589793;
   public inline static var TWO_PI = 2.0 * PI;
@@ -32,19 +32,18 @@ class MathUtils
   public static var MINIMUM_CONTROL_LN = Math.log(MINIMUM_CONTROL);
 
   // Sin table
-  private var sinTable:Vector<Float> = null;
+  var sinTable : Vector<Float> = null;
   
   // Decibel table
-  private var dbTable:Vector<Float> = null;
+  var dbTable : Vector<Float> = null;
 
   // Pow
-  private var pow:Float = 0;
+  var pow : Float = 0;
 
   // Instance
-  public static var instance(get, null):MathUtils;
-
-  public static function get_instance():MathUtils {
-    if (instance == null) {
+  public static var instance(get, null) : MathUtils;
+  public static function get_instance() : MathUtils {
+    if( instance == null ) {
       instance = new MathUtils();
       instance.createTables(4);
     }
@@ -55,11 +54,9 @@ class MathUtils
   private function new() { }
 
   // Create tables
-  public function createTables( numDigits:Int = 2 ):Void
-  {
+  public function createTables( numDigits : Int = 2 ) : Void {
     // Sin
-    if ( sinTable == null )
-    {
+    if( sinTable == null ) {
       pow = Math.pow(10, numDigits);
       var round = 1.0 / pow;
       var len = Std.int(1 + TWO_PI*pow);
@@ -75,14 +72,12 @@ class MathUtils
     }
     
     // Decibel
-    if ( dbTable == null )
-    {
-      dbTable = new Vector<Float>( 8192 );
+    if( dbTable == null ) {
+      dbTable = new Vector<Float>(8192);
       
       var ln10div20 = 2.3025850929940459011 / 20.0;
       var db = -128.0;
-      for ( b in 0...dbTable.length ) 
-      {
+      for( b in 0...dbTable.length ) {
         // From -128db to +128db in 1/32 db steps
         dbTable[b] = Math.exp(db * ln10div20);
         db += .03125; // 1/32
@@ -91,8 +86,7 @@ class MathUtils
   }
 
   // Combine Pan value
-  public static inline function combinePan( pan1:Float, pan2:Float, pan3:Float = 0, pan4:Float = 0, pan5:Float = 0 ):Float
-  {
+  public static inline function combinePan( pan1:Float, pan2:Float, pan3:Float = 0, pan4:Float = 0, pan5:Float = 0 ) : Float {
     pan1 += pan2 + pan3 + pan4 + pan5;
     
     return (pan1 > 1) ? 1 : (pan1 < -1) ? -1 : pan1;
