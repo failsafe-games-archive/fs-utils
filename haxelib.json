@@ -1,0 +1,12 @@
+{
+  "name" : "fs-utils",
+  "url" : "https://github.com/failsafe-games/fs-utils",
+  "tags": ["utils", "tools"],
+  "license" : "MIT",
+  "description" : "Simple utility class",
+  "version" : "1.0.0",
+  "classPath": "src/",
+  "releasenote" : "Initial Release",
+  "contributors" : ["starburst997"],
+  "dependencies" : {}
+}
