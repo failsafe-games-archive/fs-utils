@@ -8,5 +8,11 @@
   "classPath": "src/",
   "releasenote" : "Initial Release",
   "contributors" : ["starburst997"],
-  "dependencies" : {}
+  "dependencies" : {
+    "tink_core": "",
+    "tink_await": "",
+    "tink_runloop": "",
+    "tink_http": "",
+    "asys": ""
+  }
 }
