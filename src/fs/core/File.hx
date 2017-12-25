@@ -66,7 +66,6 @@ typedef RequestData = {
         // Download on js since there is no file system
         return @await download(path, cache);
         #else
-
         // Use `asys`lib to load from disk async
         return @await FileSystem.exists(path)
         .flatMap((exists) -> if (exists) {
