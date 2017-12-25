@@ -66,6 +66,7 @@ typedef RequestData = {
         // Download on js since there is no file system
         return @await download(path, cache);
         #else
+
         // Use `asys`lib to load from disk async
         return @await FileSystem.exists(path)
         .flatMap((exists) -> if (exists) {
@@ -73,7 +74,8 @@ typedef RequestData = {
         } else {
             Future.sync(Failure(new Error('File does not exist')));
         })
-        .onSuccess((bytes) -> if (cache) _cache.set(path, bytes));
+        .onSuccess((bytes) -> if (cache) _cache.set(path, bytes))
+        .defer();
         #end
     }
 
@@ -133,7 +135,8 @@ typedef RequestData = {
             case 200 : response.body.all();
             default : Future.sync(Failure(new Error('Bad http response')));
         })
-        .onSuccess((bytes) -> if (cache) _cache.set(_path, bytes));
+        .onSuccess((bytes) -> if (cache) _cache.set(_path, bytes))
+        .defer();
     }
 
     /**

@@ -49,4 +49,16 @@ class PromiseTools {
         });
         return promise;
     }
+
+    /**
+     *  Defer the handle of a promise to next frame (also makes sure 
+     *  to be handled on the same Main Thread)
+     *  
+     *  @param promise - 
+     *  @return Promise<T>
+     */
+    @generic public static function defer<T>( promise : Promise<T> ) : Promise<T> {
+        return promise.flatMap((outcome) -> 
+            Future.async((cb) -> Callback.defer(() -> cb(outcome))));
+    }
 }
