@@ -61,7 +61,7 @@ typedef RequestData = {
         if (cache && _cache.exists(path)) {
             return _cache.get(path);
         }
-        
+
         #if js
         // Download on js since there is no file system
         return @await download(path, cache);
@@ -69,7 +69,7 @@ typedef RequestData = {
         // Use `asys`lib to load from disk async
         return @await FileSystem.exists(path)
         .flatMap((exists) -> if (exists) {
-            asys.io.File.getBytes(path);
+            asys.io.File.getBytes(path).fromNullable();
         } else {
             Future.sync(Failure(new Error('File does not exist')));
         })
