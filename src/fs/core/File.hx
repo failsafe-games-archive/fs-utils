@@ -14,7 +14,6 @@ import haxe.io.Bytes;
 import js.Browser;
 #else
 import asys.FileSystem;
-import asys.io.File;
 #end
 
 using StringTools;
@@ -68,18 +67,13 @@ typedef RequestData = {
         return @await download(path, cache);
         #else
         // Use `asys`lib to load from disk async
-        return if ( @await FileSystem.exists(path) ) {
-            var bytes = @await File.getBytes(path);
-            
-            // Cache the bytes in a hash map
-            if (cache) _cache.set(path, bytes);
-            
-            // Return bytes
-            bytes;
+        return @await FileSystem.exists(path)
+        .flatMap((exists) -> if (exists) {
+            asys.io.File.getBytes(path);
         } else {
-            // Return failure is file does not exists
             Future.sync(Failure(new Error('File does not exist')));
-        }
+        })
+        .onSuccess((bytes) -> if (cache) _cache.set(path, bytes));
         #end
     }
 
