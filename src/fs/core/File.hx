@@ -4,7 +4,6 @@ import tink.http.Header.HeaderField;
 import tink.http.Client;
 import tink.http.Request;
 import tink.http.Method;
-import tink.url.Host;
 import tink.url.Path;
 import tink.Url;
 
@@ -13,12 +12,13 @@ import haxe.io.Bytes;
 
 #if js
 import js.Browser;
-import js.html.Location;
 #else
 import asys.FileSystem;
 import asys.io.File;
 #end
 
+using StringTools;
+using PromiseTools;
 using tink.CoreApi;
 
 typedef RequestData = {
@@ -104,6 +104,13 @@ typedef RequestData = {
      *  @return Bytes
      */
     @async public static function download( path : String, ?cache:Bool = true ) : Bytes {
+        var _path = path;
+        
+        // Check from cache
+        if (cache && _cache.exists(_path)) {
+            return _cache.get(_path);
+        }
+
         #if js
         // Format the path to URL
         var url = Url.parse(path);
@@ -115,14 +122,11 @@ typedef RequestData = {
             var parts = Path.ofString(locationUrl.path).parts();
 
             // Remove the last part (index.html)
-            parts.pop();
+            if (!location.href.endsWith('/')) parts.pop();
 
             // Create final url
             path = '${locationUrl.scheme}://${locationUrl.host}/${parts.join('/')}/${path}';    
         }
-        
-        trace('------ PATH: ${path}');
-        
         #end
         
         // Download file from http
@@ -134,7 +138,8 @@ typedef RequestData = {
         .flatMap((response) -> switch(response.header.statusCode) {
             case 200 : response.body.all();
             default : Future.sync(Failure(new Error('Bad http response')));
-        });
+        })
+        .onSuccess((bytes) -> if (cache) _cache.set(_path, bytes));
     }
 
     /**
