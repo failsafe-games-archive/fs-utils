@@ -16,4 +16,9 @@ class OptionTools {
     public static inline function option<T>( obj : T ) : Option<T> {
         return obj == null ? None : Some(obj);
     }
+
+    // TODO: Move to another utils
+    public static inline function getOr<T>( obj : T, f : Void -> T ) : T {
+        return obj == null ? f() : obj;
+    }
 }
