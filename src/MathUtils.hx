@@ -15,6 +15,7 @@ class MathUtils {
     public inline static var TWELTH_TWO = 1.0594630943592952645618252949463;
     public inline static var LN10 = 2.30258509299405;
     public inline static var LOG10E = 0.4342944819032518;
+	public inline static var EPS = 1e-6;
 
     // The base 10 exponent multiplier for decibels
     public inline static var DECIBELS_PER_DECADE = 20.0;
@@ -156,4 +157,39 @@ class MathUtils {
         if ( a < 0 ) a = b - Math.abs(a % b);
         return a % b;
     }
+
+    // Spherically interpolates between two angles.
+	public inline static function slerp( a : Float, b : Float, t : Float ) {
+		var m = Math;
+		var c1 = m.sin(a * .5);
+		var r1 = m.cos(a * .5);
+		var c2 = m.sin(b * .5);
+		var r2 = m.cos(b * .5);
+		var c = r1 * r2 + c1 * c2;
+		if (c < 0.) {
+			if ((1. + c) > EPS) {
+				var o = m.acos(-c);
+				var s = m.sin(o);
+				var s0 = m.sin((1 - t) * o) / s;
+				var s1 = m.sin(t * o) / s;
+				return m.atan2(s0 * c1 - s1 * c2, s0 * r1 - s1 * r2) * 2.;
+			} else {
+				var s0 = 1 - t;
+				var s1 = t;
+				return m.atan2(s0 * c1 - s1 * c2, s0 * r1 - s1 * r2) * 2;
+			}
+		} else {
+			if ((1 - c) > EPS) {
+				var o = m.acos(c);
+				var s = m.sin(o);
+				var s0 = m.sin((1 - t) * o) / s;
+				var s1 = m.sin(t * o) / s;
+				return m.atan2(s0 * c1 + s1 * c2, s0 * r1 + s1 * r2) * 2.;
+			} else {
+				var s0 = 1 - t;
+				var s1 = t;
+				return m.atan2(s0 * c1 + s1 * c2, s0 * r1 + s1 * r2) * 2.;
+			}
+		}
+	}
 }
