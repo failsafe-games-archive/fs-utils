@@ -21,4 +21,12 @@ class OptionTools {
     public static inline function getOr<T>( obj : T, f : Void -> T ) : T {
         return obj == null ? f() : obj;
     }
+
+    public static inline function ifSome<T>( obj : Option<T>, f : T -> Void ) : Option<T> {
+        switch(obj) {
+            case Some(obj) : f(obj);
+            case None : 
+        }
+        return obj;
+    }
 }
